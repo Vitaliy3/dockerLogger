@@ -35,7 +35,6 @@ func main() {
 			if err != nil {
 				log.Println(err)
 			}
-			log.Println(prevPos, len(data), *logFile)
 			if prevPos != len(data) {
 				if len(data) < prevPos {
 					prevPos = len(data)
