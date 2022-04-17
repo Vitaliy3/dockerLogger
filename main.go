@@ -1,32 +1,41 @@
 package main
 
 import (
-	"context"
 	"flag"
-	"log"
-	"os"
-
-	"github.com/docker/docker/api/types"
-	"github.com/docker/docker/client"
-	"github.com/docker/docker/pkg/stdcopy"
+	"fmt"
+	"io/ioutil"
+	"time"
 )
 
 func main() {
-	containerID := flag.String("containerID", "", "reading logs from specified container")
+	logFile := flag.String("file", "", "")
+	mode := flag.Int("mode", 0, "")
 	flag.Parse()
 
-	log.Printf("start reading logs with container %s \n", *containerID)
-
-	ctx := context.Background()
-	cli, err := client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())
-	if err != nil {
-		panic(err)
+	if *logFile == "" {
+		fmt.Println("specify log_dir path by flag [logdir]")
+		return
 	}
 
-	out, err := cli.ContainerLogs(ctx, *containerID, types.ContainerLogsOptions{ShowStdout: true})
-	if err != nil {
-		panic(err)
+	if *mode == 0 {
+		fmt.Println(*logFile)
+		data, _ := ioutil.ReadFile(*logFile)
+		fmt.Println(string(data))
 	}
 
-	stdcopy.StdCopy(os.Stdout, os.Stderr, out)
+	if *mode == 1 {
+		prevPos := 0
+		for {
+			time.Sleep(time.Second * 1)
+			data, _ := ioutil.ReadFile(*logFile)
+			if prevPos != len(data) {
+				if len(data) < prevPos {
+					prevPos = len(data)
+				}
+				fmt.Printf("%s", string(data[prevPos:]))
+				prevPos = len(data)
+			}
+		}
+	}
+
 }
