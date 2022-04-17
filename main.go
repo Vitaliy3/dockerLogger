@@ -32,11 +32,12 @@ func main() {
 		for {
 			time.Sleep(time.Second * 1)
 			data, _ := ioutil.ReadFile(*logFile)
+			log.Println("prevpos", prevPos, len(data))
 			if prevPos != len(data) {
 				if len(data) < prevPos {
 					prevPos = len(data)
 				}
-				log.Printf("%s", string(data[prevPos:]))
+				log.Println("%s", string(data[prevPos:]))
 				prevPos = len(data)
 			}
 		}
