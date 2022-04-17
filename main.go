@@ -31,7 +31,10 @@ func main() {
 		prevPos := 0
 		for {
 			time.Sleep(time.Second * 1)
-			data, _ := ioutil.ReadFile(*logFile)
+			data, err := ioutil.ReadFile(*logFile)
+			if err != nil {
+				log.Println(err)
+			}
 			log.Println(prevPos, len(data), *logFile)
 			if prevPos != len(data) {
 				if len(data) < prevPos {
