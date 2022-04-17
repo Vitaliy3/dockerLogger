@@ -4,6 +4,8 @@ import (
 	"flag"
 	"fmt"
 	"io/ioutil"
+	"log"
+	"os"
 	"time"
 )
 
@@ -17,10 +19,12 @@ func main() {
 		return
 	}
 
+	log.SetOutput(os.Stdout)
+
 	if *mode == 0 {
-		fmt.Println(*logFile)
+		log.Println(*logFile)
 		data, _ := ioutil.ReadFile(*logFile)
-		fmt.Println(string(data))
+		log.Println(string(data))
 	}
 
 	if *mode == 1 {
@@ -32,7 +36,7 @@ func main() {
 				if len(data) < prevPos {
 					prevPos = len(data)
 				}
-				fmt.Printf("%s", string(data[prevPos:]))
+				log.Printf("%s", string(data[prevPos:]))
 				prevPos = len(data)
 			}
 		}
